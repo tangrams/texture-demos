@@ -20,7 +20,25 @@ styles:
         lighting: false
         shaders:
             uniforms:
-                    u_texture: water.gif
+                u_texture: water.gif
+                u_scale: 3.
+            blocks:
+                global: |
+                    vec4 TileTexture(sampler2D tex, float scale) {
+                        vec2 IN = TileCoords()*scale;
+                        vec2 OUT = TileCoords()*scale*2.;
+                        return mix(texture2D(tex,fract(IN)), texture2D(tex,fract(OUT)), fract(u_map_position.z));
+                    }
+                color: |
+                    vec2 st = TileCoords()*3. ;
+                    color.rgb = TileTexture(u_texture,u_scale).rgb;
+    texturelines:
+        base: lines
+        mix: tools 
+        lighting: false
+        shaders:
+            uniforms:
+                u_texture: water.gif
             blocks:
                 global: |
                     vec4 TileTexture(sampler2D tex, float scale) {
@@ -49,7 +67,20 @@ styles:
         mix: texture
         shaders:
             uniforms:
-                u_texture: water.gif
+                u_texture: dirt.gif
+    stone:
+        base: polygons
+        mix: texture
+        shaders:
+            uniforms:
+                u_texture: stone.gif
+                u_scale: 10.
+    stonelines:
+        base: lines
+        mix: texturelines
+        shaders:
+            uniforms:
+                u_texture: stone.gif
 
 sources:
     osm:
@@ -66,7 +97,6 @@ layers:
         draw:
             grass:
                 order: 1
-                color: [0.271,0.267,0.243]
     water:
         data: { source: osm }
         draw:
@@ -78,32 +108,11 @@ layers:
         filter: { not: { highway: service, kind: rail } }
         properties: { width: 3 }
         draw:
-            lines:
+            stonelines:
                 order: 4
-                color: '#343434'
                 width: 8
     buildings:
         data: { source: osm }
         draw:
-            lines:
+            stone:
                 order: 5
-                width: 1px
-                color: black
-    places:
-        data: { source: osm }
-        filter: { name: true }
-        draw:
-            text:
-                font:
-                    typeface: Italic 20px Baskerville
-                    fill: black
-                    stroke: { color: white , width: 7 }
-    landuse_labels:
-        data: { source: osm }
-        filter: { name: true, kind: park, $zoom: { min: 16 } }
-        draw:
-            text:
-                font:
-                    typeface: Italic 18px Baskerville
-                    fill: black
-                    stroke: { color: white , width: 7 }
