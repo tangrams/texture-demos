@@ -1,68 +1,82 @@
 /*jslint browser: true*/
 /*global Tangram, gui */
 
-map = (function () {
+function parseQuery (qstr) {
+    var query = {};
+    var a = qstr.split('&');
+    for (var i in a) {
+        var b = a[i].split('=');
+        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1]);
+    }
+    return query;
+}
 
-    var map_start_location = [40.7238, -73.9881, 14]; // NYC
+map = (function () {
+    'use strict';
+
+    var map_start_location = [37.8090, -122.2220, 12]; // Oakland
 
     /*** URL parsing ***/
 
     // leaflet-style URL hash pattern:
     // #[zoom],[lat],[lng]
     var url_hash = window.location.hash.slice(1, window.location.hash.length).split('/');
-    var searchtext = "";
 
-    if (url_hash.length >= 3) {
+    if (url_hash.length == 3) {
         map_start_location = [url_hash[1],url_hash[2], url_hash[0]];
         // convert from strings
         map_start_location = map_start_location.map(Number);
     }
-    if (url_hash.length == 4) {
-        searchtext = unescape(url_hash[3]);
-    }
 
-    // Put current state on URL
-    function updateURL () {
-        var map_latlng = map.getCenter();
-        var url_options = [map.getZoom().toFixed(1), map_latlng.lat.toFixed(4), map_latlng.lng.toFixed(4), escape(searchtext)];
-        window.location.hash = url_options.join('/');
-    }
+    // determine the scene url and content to load during start-up
+    var scene_url = 'styles/elevation-tiles.yaml';
 
-    function updateHash () {
-        newhash = hash.lastHash + "/"+scene.config.layers["roads"].properties.filter_text;
-        if (window.location != newhash) window.location = newhash
+    // If there is a query, use it as the scene_url
+    var query = parseQuery(window.location.search.slice(1));
+    if (query.url) {
+        scene_url = query.url;
     }
     /*** Map ***/
 
     var map = L.map('map', {
-        maxZoom: 20,
-        minZoom: 4,
-        inertia: false,
-        keyboard: true
-    });
+        "keyboardZoomOffset" : 1.,
+        "minZoom" : 2,
+        "maxZoom" : 16,
+        }
+    );
+
     var layer = Tangram.leafletLayer({
-        scene: 'scene.yaml',
-        attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
+        scene: scene_url,
+        attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
     });
+
+    if (query.quiet) {
+        layer.options.attribution = "";
+        map.attributionControl.setPrefix('');
+        window.addEventListener("load", function() {
+            var div = document.getElementById("mz-bug");
+            if (div != null) {div.style.display = "none";}
+            div = document.getElementById("mz-citysearch");
+            if (div != null) {div.style.display = "none";}
+            div = document.getElementById("mz-geolocator");
+            if (div != null) {div.style.display = "none";}
+        });
+    }
+
+    if (query.noscroll) {
+        map.scrollWheelZoom.disable();
+    }
 
     window.layer = layer;
     var scene = layer.scene;
     window.scene = scene;
 
-    map.setView(map_start_location.slice(0, 2), map_start_location[2]);
-    map.on('moveend', updateURL);
+    // setView expects format ([lat, long], zoom)
+    map.setView(map_start_location.slice(0, 3), map_start_location[2]);
 
-    // Add map
-    window.addEventListener('load', function () {
-        // Scene initialized
-        layer.on('init', function() {
-            addGUI();
-            var filterbox = document.getElementById('filterbox').getElementsByTagName('input')[0];
-            if (filterbox.value.length == 0) filterbox.focus();
-            else filterbox.select();
-        });
-        layer.addTo(map);
-    });
+    var hash = new L.Hash(map);
+
+    layer.addTo(map);
 
     return map;
 
