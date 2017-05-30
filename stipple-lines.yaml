@@ -1,0 +1,49 @@
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url_params:
+            api_key: mapzen-tDHBHDp
+        max_zoom: 16
+scene:
+    background:
+        color: white
+textures:
+    line-texture:
+        url: stipple2-r.png
+
+styles:
+    # combination of hypsometric and spheremap, using two separate textures
+    textured-lines:
+        base: lines
+        lighting: false
+        material:
+            diffuse:
+                texture: line-texture
+                mapping: uv
+        shaders:
+            uniforms:
+                u_tex: line-texture
+            blocks:
+                color: |
+                    // have to do a fract on the texcoord to get it to repeat over the length of the line
+                    //color = texture2D(u_tex, fract(vec2(v_texcoord.x, v_texcoord.y))); // straight texture
+                    // color *= texture2D(u_tex, fract(vec2(v_texcoord.x, v_texcoord.y))); // tinted
+                    color *= 1. - texture2D(u_tex, fract(vec2(v_texcoord.x, v_texcoord.y))); // inverted & tinted
+                    color.a = texture2D(u_tex, fract(vec2(v_texcoord.x, v_texcoord.y))).a; // use texture's alpha
+
+
+layers:
+    landuse:
+        data: { source: mapzen}
+        filter: { kind: [forest, park, conservation, nature_reserve, national_park] }
+        draw:
+            polygons:
+                order: 1
+                color: green
+            width: 2px
+            lines:
+                style: textured-lines
+                order: 200
+                color: green
+                width: 10px
