@@ -1,0 +1,33 @@
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url_params:
+            api_key: mapzen-tDHBHDp
+        max_zoom: 16
+textures:
+    line-texture:
+        url: http://localhost:8080/uv-coords.png
+
+styles:
+    textured-lines:
+        base: lines
+        lighting: false
+        material:
+            diffuse:
+                texture: line-texture
+                mapping: uv
+        shaders:
+            uniforms:
+                u_tex: line-texture
+            blocks:
+                color: |
+                    color = texture2D(u_tex, fract(vec2(v_texcoord.x, v_texcoord.y)));
+
+layers:
+    water:
+        data: { source: mapzen}
+        draw:
+            textured-lines:
+                order: 1
+                width: 50px

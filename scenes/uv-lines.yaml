@@ -1,0 +1,35 @@
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url_params:
+            api_key: mapzen-tDHBHDp
+        max_zoom: 16
+
+styles:
+    uvs:
+        base: lines
+        texcoords: true
+        blend: overlay
+        shaders:
+            blocks:
+                color: |
+                    //color.a = 1. - pow(fract(min(v_texcoord.x, .999)), .5);
+                    color.rg = mod(fract(v_texcoord.xx), .25)*3.;
+                    color.b = 1.;
+
+layers:
+    landuse:
+        data: { source: mapzen}
+        filter: { kind: [forest, park, conservation, nature_reserve, national_park] }
+        draw:
+            polygons:
+                order: 1
+                color: green
+                width: 2px
+            lines:
+                style: uvs
+                order: 20
+                color: white
+                width: 30px
+                join: round
