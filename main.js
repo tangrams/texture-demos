@@ -41,7 +41,7 @@ map = (function () {
     var map = L.map('map', {
         "keyboardZoomOffset" : 1.,
         "minZoom" : 2,
-        "maxZoom" : 16,
+        "maxZoom" : 20,
         }
     );
 

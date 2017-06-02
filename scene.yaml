@@ -20,8 +20,8 @@ styles:
         lighting: false
         shaders:
             uniforms:
-                u_texture: water.gif
-                u_scale: 3.
+                u_texture: water2.gif
+                u_scale: .5
             blocks:
                 global: |
                     vec4 TileTexture(sampler2D tex, float scale) {
@@ -47,8 +47,8 @@ styles:
                         return mix(texture2D(tex,fract(IN)), texture2D(tex,fract(OUT)), fract(u_map_position.z));
                     }
                 color: |
-                    vec2 st = TileCoords()*3.0 ;
-                    color.rgb = TileTexture(u_texture,3.).rgb;
+                    vec2 st = TileCoords()*1.0 ;
+                    color.rgb = TileTexture(u_texture,1.).rgb;
          
     grass:
         base: polygons
@@ -61,7 +61,7 @@ styles:
         mix: texture
         shaders:
             uniforms:
-                u_texture: water.gif
+                u_texture: water2.gif
     dirt:
         base: polygons
         mix: texture
