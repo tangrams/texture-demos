@@ -7,7 +7,7 @@ sources:
         max_zoom: 16
 textures:
     line-texture:
-        url: http://localhost:8080/uv-coords.png
+        url: https://meetar.github.io/texture-demos/uv-coords.png
 
 styles:
     textured-lines:
