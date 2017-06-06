@@ -10,7 +10,7 @@ scene:
         color: white
 textures:
     line-texture:
-        url: stipple2-r.png
+        url: https://meetar.github.io/texture-demos/stipple2-r.png
 
 styles:
     # combination of hypsometric and spheremap, using two separate textures
