@@ -1,0 +1,190 @@
+styles:
+    tools:
+        base: polygons
+        shaders:
+            blocks:
+                position: |
+                    // make tile worldspace coordinates available to the global block
+                    v_pos = modelPosition();
+                global: |
+                    varying vec4 v_pos;
+                    vec2 TileCoords(){
+                        return v_pos.xy;
+                    }
+                    bool grid(vec2 st, float res, float press){
+                        vec2 grid = fract(st*res);
+                        return grid.x < res*press || grid.y < res*press;
+                    }
+                    float TileGrid(float res){
+                        vec2 st = TileCoords()*100.*res;
+                        float pct = 0.0;
+                        float press = 0.4+(1.0-fract(u_map_position.z))*0.2;
+                        if (grid(st,0.01,press)) pct += 0.5;
+                        if (grid(st,0.1,press)) pct += 0.1;
+                        return pct;
+                    }
+                    float TileGrid(){ return mix(TileGrid(1.),TileGrid(2.),fract(u_map_position.z)); }
+
+    splatter:
+        base: polygons
+        mix: tools
+        animated: false
+        shaders:
+            defines:
+                TANGRAM_WORLD_POSITION_WRAP: false
+            blocks:
+                global: |
+                    vec3 random3(vec3 c) {
+                        float j = 4096.0*sin(dot(c,vec3(17.0, 59.4, 15.0)));
+                        vec3 r;
+                        r.z = fract(512.0*j);
+                        j *= .425;
+                        r.x = fract(512.0*j);
+                        j *= .425;
+                        r.y = fract(512.0*j);
+                        return r-0.5;
+                    }
+
+                    const float F3 =  0.3333333;
+                    const float G3 =  0.1666667;
+                    float snoise(vec3 p) {
+                        vec3 s = floor(p + dot(p, vec3(F3)));
+                        vec3 x = p - s + dot(s, vec3(G3));
+
+                        vec3 e = step(vec3(0.0), x - x.yzx);
+                        vec3 i1 = e*(1.0 - e.zxy);
+                        vec3 i2 = 1.0 - e.zxy*(1.0 - e);
+
+                        vec3 x1 = x - i1 + G3;
+                        vec3 x2 = x - i2 + 2.0*G3;
+                        vec3 x3 = x - 1.0 + 3.0*G3;
+
+                        vec4 w, d;
+
+                        w.x = dot(x, x);
+                        w.y = dot(x1, x1);
+                        w.z = dot(x2, x2);
+                        w.w = dot(x3, x3);
+
+                        w = max(0.565 - w, 0.0);
+
+                        d.x = dot(random3(s), x);
+                        d.y = dot(random3(s + i1), x1);
+                        d.z = dot(random3(s + i2), x2);
+                        d.w = dot(random3(s + 1.0), x3);
+
+                        w *= w;
+                        w *= w;
+                        d *= w;
+
+                        return dot(d, vec4(52.0));
+                    }
+                color: |
+                    // vec2 st = worldPosition().xy / exp2(20.);
+                    vec2 st = worldPosition().xy / 1048576.;
+                    // st = TileCoords().xy;
+
+                    float t = u_time;
+
+                    color.rgb = vec3(0.78,0.78,0.78);
+                    color.rgb = mix(color.rgb, vec3(1.0), step(.4, snoise( vec3(st*1.,t*1.+3232.0) ) ));
+                    color.rgb = mix(color.rgb, vec3(0.7), step(.3, snoise( vec3(st*4.,t*2.+123.0) ) ));
+                    color.rgb = mix(color.rgb, vec3(1.0), step(.2, snoise( vec3(st*4.,t+0.0) ) ));
+                    color.rgb = mix(color.rgb, vec3(0.941), step(.3, snoise( vec3(st*4.,t+0.0) ) ));
+                    color.rgb = mix(color.rgb, vec3(0.647), step(.2, snoise( vec3(st*7.,t+0.0) ) ));
+                    color.rgb = mix(color.rgb, vec3(0.377), step(.4, snoise( vec3(st*7.,t+0.0) ) ));
+                    color.rgb = mix(color.rgb, vec3(1.000), step(.5, snoise( vec3(st*2.,t+64.0) ) ));
+
+
+    texture:
+        base: polygons
+        shaders:
+            uniforms:
+                u_texture: https://meetar.github.io/texture-demos/uv-coords.png
+                u_scale: 4. # number of times to repeat texture in a tile
+            blocks:
+                position: |
+                    // make tile worldspace coordinates available to the global block
+                    v_pos = modelPosition();
+                global: |
+                    varying vec4 v_pos;
+                    vec4 TileTexture(sampler2D tex, float scale) {
+                        // CONTROLS
+                        // how smooth should the transition be?
+                        float smoothness = 0.75; // 0. - 1.
+
+                        vec2 IN = v_pos.xy * scale * exp2(floor(u_map_position.z)-u_tile_origin.z);
+                        vec2 OUT = v_pos.xy * scale * exp2(floor(u_map_position.z)-u_tile_origin.z + 1.);
+                        vec4 intex = texture2D(tex,fract(IN));
+                        vec4 outtex = texture2D(tex,fract(OUT));
+                        float texf;
+
+                        //// linear transition
+                        // texf = fract(u_map_position.z);
+                        //// use smoothstep instead
+                        float tx = (1. - smoothness) * .5;
+                        texf = smoothstep(tx, 1.-tx, fract(u_map_position.z));
+
+                        return mix(intex, outtex, texf);
+                    }
+                color: |
+                    color.rgb = TileTexture(u_texture,u_scale).rgb;
+
+    texturelines:
+        base: lines
+        mix: texture
+    grass:
+        base: polygons
+        mix: texture
+        shaders:
+            uniforms:
+                u_texture: https://meetar.github.io/texture-demos/grass.gif
+    water:
+        base: polygons
+        mix: texture
+        shaders:
+            uniforms:
+                u_texture: https://meetar.github.io/texture-demos/water2.gif
+                # u_texture: https://meetar.github.io/texture-demos/uv-coords.png
+    dirt:
+        base: polygons
+        mix: texture
+        shaders:
+            uniforms:
+                u_texture: https://meetar.github.io/texture-demos/dirt.gif
+    stone:
+        base: polygons
+        mix: texture
+        shaders:
+            uniforms:
+                u_texture: https://meetar.github.io/texture-demos/stone.gif
+                u_scale: 8.
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url_params:
+            api_key: mapzen-tDHBHDp
+        max_zoom: 16
+
+layers:
+    earth:
+        data: { source: mapzen }
+        draw:
+            splatter:
+                order: 0
+    landuse:
+        data: { source: mapzen }
+        draw:
+            grass:
+                order: 1
+    water:
+        data: { source: mapzen }
+        draw:
+            water:
+                order: 3
+    buildings:
+        data: { source: mapzen }
+        draw:
+            stone:
+                order: 5
