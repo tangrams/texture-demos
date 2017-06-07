@@ -1,0 +1,55 @@
+import:
+    - https://tangrams.github.io/blocks/generative/noise.yaml
+styles:
+    splatter:
+        mix: [generative-noise]
+        base: polygons
+        animated: false # set to true for extra madness
+        shaders:
+            defines:
+                TANGRAM_WORLD_POSITION_WRAP: false
+            blocks:
+                global: |
+                    vec3 splatter(vec2 st, float t) {
+                        st = ceil(st*16.)/16.;
+                        vec3 outcolor = vec3(0.78,0.78,0.78);
+                        outcolor = mix(outcolor, vec3(1.0), step(.5, snoise( vec3(st*1.,t*1.+3232.0) ) ));
+                        outcolor = mix(outcolor, vec3(0.7), step(.4, snoise( vec3(st*4.,t*2.+123.0) ) ));
+                        outcolor = mix(outcolor, vec3(1.0), step(.3, snoise( vec3(st*4.,t+0.0) ) ));
+                        outcolor = mix(outcolor, vec3(0.941), step(.4, snoise( vec3(st*4.,t+0.0) ) ));
+                        outcolor = mix(outcolor, vec3(0.647), step(.3, snoise( vec3(st*7.,t+0.0) ) ));
+                        outcolor = mix(outcolor, vec3(0.377), step(.5, snoise( vec3(st*7.,t+0.0) ) ));
+                        outcolor = mix(outcolor, vec3(1.000), step(.6, snoise( vec3(st*2.,t+64.0) ) ));
+                        return outcolor;
+                    }
+                color: |
+                    vec2 st = worldPosition().xy / exp2(24.);
+
+                    float t = u_time;
+                    vec3 color1 = splatter(st * exp2(floor(u_map_position.z)), t);
+                    vec3 color2 = splatter(st * exp2(floor(u_map_position.z)+1.), t);
+                    float f = fract(u_map_position.z);
+                    color.rgb = mix(color1, color2, f);
+
+
+
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url_params:
+            api_key: mapzen-tDHBHDp
+        max_zoom: 16
+
+layers:
+    earth:
+        data: { source: mapzen }
+        draw:
+            splatter:
+                order: 0
+    water:
+        data: { source: mapzen }
+        draw:
+            polygons:
+                order: 3
+                color: dodgerblue
