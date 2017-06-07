@@ -95,70 +95,6 @@ styles:
                     color.rgb = mix(color.rgb, vec3(0.377), step(.4, snoise( vec3(st*7.,t+0.0) ) ));
                     color.rgb = mix(color.rgb, vec3(1.000), step(.5, snoise( vec3(st*2.,t+64.0) ) ));
 
-
-    texture:
-        base: polygons
-        shaders:
-            uniforms:
-                u_texture: https://meetar.github.io/texture-demos/uv-coords.png
-                u_scale: 4. # number of times to repeat texture in a tile
-            blocks:
-                position: |
-                    // make tile worldspace coordinates available to the global block
-                    v_pos = modelPosition();
-                global: |
-                    varying vec4 v_pos;
-                    vec4 TileTexture(sampler2D tex, float scale) {
-                        // CONTROLS
-                        // how smooth should the transition be?
-                        float smoothness = 0.75; // 0. - 1.
-
-                        vec2 IN = v_pos.xy * scale * exp2(floor(u_map_position.z)-u_tile_origin.z);
-                        vec2 OUT = v_pos.xy * scale * exp2(floor(u_map_position.z)-u_tile_origin.z + 1.);
-                        vec4 intex = texture2D(tex,fract(IN));
-                        vec4 outtex = texture2D(tex,fract(OUT));
-                        float texf;
-
-                        //// linear transition
-                        // texf = fract(u_map_position.z);
-                        //// use smoothstep instead
-                        float tx = (1. - smoothness) * .5;
-                        texf = smoothstep(tx, 1.-tx, fract(u_map_position.z));
-
-                        return mix(intex, outtex, texf);
-                    }
-                color: |
-                    color.rgb = TileTexture(u_texture,u_scale).rgb;
-
-    texturelines:
-        base: lines
-        mix: texture
-    grass:
-        base: polygons
-        mix: texture
-        shaders:
-            uniforms:
-                u_texture: https://meetar.github.io/texture-demos/grass.gif
-    water:
-        base: polygons
-        mix: texture
-        shaders:
-            uniforms:
-                u_texture: https://meetar.github.io/texture-demos/water2.gif
-                # u_texture: https://meetar.github.io/texture-demos/uv-coords.png
-    dirt:
-        base: polygons
-        mix: texture
-        shaders:
-            uniforms:
-                u_texture: https://meetar.github.io/texture-demos/dirt.gif
-    stone:
-        base: polygons
-        mix: texture
-        shaders:
-            uniforms:
-                u_texture: https://meetar.github.io/texture-demos/stone.gif
-                u_scale: 8.
 sources:
     mapzen:
         type: TopoJSON
@@ -173,18 +109,9 @@ layers:
         draw:
             splatter:
                 order: 0
-    landuse:
-        data: { source: mapzen }
-        draw:
-            grass:
-                order: 1
     water:
         data: { source: mapzen }
         draw:
-            water:
+            polygons:
                 order: 3
-    buildings:
-        data: { source: mapzen }
-        draw:
-            stone:
-                order: 5
+                color: dodgerblue
