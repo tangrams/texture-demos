@@ -6,17 +6,16 @@ sources:
         url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=mapzen-PvCT6iP
 
 textures:
-    test:
-        url: http://meetar.github.io/texture-demos/sprite5.png
+    test_sprites:
+        url: https://meetar.github.io/texture-demos/sprite5.png
         sprites:
             sprite1: [0, 0, 32, 32]
             sprite2: [32, 0, 32, 32]
 
 styles:
-    test_style:
+    blend_points:
         base: points
-        texcoords: true
-        atexture: test
+        texture: test_sprites
         # texture_blend: overlay # TBD?
         shaders:
             blocks:
@@ -57,9 +56,9 @@ layers:
     places:
         data: { source: mapzen }
         draw:
-            points1:
-                style: test_style
-                sprite: sprite2
+            points:
+                style: blend_points
+                sprite: sprite1
                 color: [1, .5, .5]
                 size: 64px
                 collide: false
