@@ -7,7 +7,7 @@ sources:
 
 textures:
     test_sprites:
-        url: https://meetar.github.io/texture-demos/sprite5.png
+        url: https://tangrams.github.io/texture-demos/sprite5.png
         sprites:
             sprite1: [0, 0, 32, 32]
             sprite2: [32, 0, 32, 32]

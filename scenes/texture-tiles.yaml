@@ -3,7 +3,7 @@ styles:
         base: polygons
         shaders:
             uniforms:
-                u_texture: https://meetar.github.io/texture-demos/uv-coords.png
+                u_texture: https://tangrams.github.io/texture-demos/uv-coords.png
                 u_scale: 4. # number of times to repeat texture in a tile
             blocks:
                 position: |
@@ -41,26 +41,26 @@ styles:
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://meetar.github.io/texture-demos/grass.gif
+                u_texture: https://tangrams.github.io/texture-demos/grass.gif
     water:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://meetar.github.io/texture-demos/water2.gif
-                # u_texture: https://meetar.github.io/texture-demos/uv-coords.png
+                u_texture: https://tangrams.github.io/texture-demos/water2.gif
+                # u_texture: https://tangrams.github.io/texture-demos/uv-coords.png
     dirt:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://meetar.github.io/texture-demos/dirt.gif
+                u_texture: https://tangrams.github.io/texture-demos/dirt.gif
     stone:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://meetar.github.io/texture-demos/stone.gif
+                u_texture: https://tangrams.github.io/texture-demos/stone.gif
                 u_scale: 8.
 sources:
     mapzen:
