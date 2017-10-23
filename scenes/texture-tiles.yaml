@@ -41,26 +41,26 @@ styles:
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://tangrams.github.io/texture-demos/grass.gif
+                u_texture: ../img/grass4.png
     water:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://tangrams.github.io/texture-demos/water2.gif
+                u_texture: ../img/water2.gif
                 # u_texture: https://tangrams.github.io/texture-demos/uv-coords.png
     dirt:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://tangrams.github.io/texture-demos/dirt.gif
+                u_texture: ../img/stones1.png
     stone:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: https://tangrams.github.io/texture-demos/stone.gif
+                u_texture: ../img/stone.gif
                 u_scale: 8.
 sources:
     mapzen:
