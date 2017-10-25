@@ -7,7 +7,10 @@ Demos:
 Cross-fading between tiled texture zooms to maintain texture density<br>
 http://tangrams.github.io/texture-demos/?url=scenes/texture-tiles.yaml
 
-A global shader texture, to illustrate the problem<br>
+A non-crossfading texture, to illustrate the problem<br>
+http://tangrams.github.io/texture-demos/problem-case
+
+A global shader texture, to illustrate a related problem<br>
 http://tangrams.github.io/texture-demos/?url=scenes/global-splatter.yaml
 
 Cross-fading between untiled shader texture zooms to maintain texture density<br>
