@@ -1,0 +1,75 @@
+global:
+    scale: 1.
+styles:
+    grass:
+        base: polygons
+        material:
+            diffuse:
+                texture: grass
+                mapping: planar
+                scale: global.scale
+    water:
+        base: polygons
+        material:
+            diffuse:
+                texture: water
+                mapping: planar
+                scale: global.scale
+    dirt:
+        base: polygons
+        material:
+            diffuse:
+                texture: dirt
+                mapping: planar
+                scale: global.scale
+    stone:
+        base: polygons
+        material:
+            diffuse:
+                texture: stone
+                mapping: planar
+                scale: global.scale
+
+textures:
+    grass:
+        url: ../img/grass4.png
+    water:
+        url: ../img/water2.gif
+    dirt:
+        url: ../img/stones1.png
+    stone:
+        url: ../img/stone.gif
+
+sources:
+    mapzen:
+        type: TopoJSON
+        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+        url_params:
+            api_key: mapzen-tDHBHDp
+        max_zoom: 16
+
+layers:
+    earth:
+        data: { source: mapzen }
+        draw:
+            dirt:
+                order: 0
+                color: white
+    landuse:
+        data: { source: mapzen }
+        draw:
+            grass:
+                order: 1
+                color: white
+    water:
+        data: { source: mapzen }
+        draw:
+            water:
+                color: white
+                order: 3
+    buildings:
+        data: { source: mapzen }
+        draw:
+            stone:
+                order: 5
+                color: white

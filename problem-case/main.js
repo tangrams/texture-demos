@@ -29,13 +29,28 @@ map = (function () {
     }
 
     // determine the scene url and content to load during start-up
-    var scene_url = 'problem-case/scene.yaml';
+    var scene_url = 'scene.yaml';
 
     // If there is a query, use it as the scene_url
     var query = parseQuery(window.location.search.slice(1));
     if (query.url) {
         scene_url = query.url;
     }
+
+    // Create dat GUI
+    var gui;
+    function addGUI () {
+        gui.domElement.parentNode.style.zIndex = 1000; // make sure GUI is on top of map
+        window.gui = gui;
+        gui.scale = 0.;
+        gui.add(gui, 'scale', -7., 0.).name("powers of 10").step(1).onChange(function(value) {
+            scene.config.global.scale = gui.scaleOutput = Math.pow(10, value);
+            scene.updateConfig();
+        }).listen();
+        gui.scaleOutput = '1.';
+        gui.add(gui, 'scaleOutput').name("computed scale").step(.000001).listen().lock();
+    }
+
     /*** Map ***/
 
     var map = L.map('map', {
@@ -50,23 +65,6 @@ map = (function () {
         attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
     });
 
-    if (query.quiet) {
-        layer.options.attribution = "";
-        map.attributionControl.setPrefix('');
-        window.addEventListener("load", function() {
-            var div = document.getElementById("mz-bug");
-            if (div != null) {div.style.display = "none";}
-            div = document.getElementById("mz-citysearch");
-            if (div != null) {div.style.display = "none";}
-            div = document.getElementById("mz-geolocator");
-            if (div != null) {div.style.display = "none";}
-        });
-    }
-
-    if (query.noscroll) {
-        map.scrollWheelZoom.disable();
-    }
-
     window.layer = layer;
     var scene = layer.scene;
     window.scene = scene;
@@ -76,7 +74,16 @@ map = (function () {
 
     var hash = new L.Hash(map);
 
-    layer.addTo(map);
+    /***** Render loop *****/
+
+    window.addEventListener('load', function () {
+        // Scene initialized
+        layer.on('init', function() {
+            gui = new dat.GUI({ autoPlace: true, hideable: true, width: 300 });
+            addGUI();
+        });
+        layer.addTo(map);
+    });
 
     return map;
 
