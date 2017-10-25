@@ -1,3 +1,5 @@
+# visualization of uv texture coordinates on line segments
+
 sources:
     mapzen:
         type: TopoJSON
@@ -7,7 +9,7 @@ sources:
         max_zoom: 16
 textures:
     line-texture:
-        url: https://meetar.github.io/texture-demos/uv-coords.png
+        url: ../img/uv-coords.png
 
 styles:
     textured-lines:

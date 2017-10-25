@@ -10,7 +10,7 @@ scene:
         color: white
 textures:
     line-texture:
-        url: https://tangrams.github.io/texture-demos/stipple2-r.png
+        url: ../img/stipple2-r.png
 
 styles:
     # combination of hypsometric and spheremap, using two separate textures

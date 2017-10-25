@@ -14,7 +14,8 @@ styles:
                     vec4 TileTexture(sampler2D tex, float scale) {
                         // CONTROLS
                         // how smooth should the transition be?
-                        float smoothness = 0.75; // 0. - 1.
+                        // 0 = snapping, 1 = continuous smoothstep crossfade
+                        float smoothness = .75;
 
                         vec2 IN = v_pos.xy * scale * exp2(floor(u_map_position.z)-u_tile_origin.z);
                         vec2 OUT = v_pos.xy * scale * exp2(floor(u_map_position.z)-u_tile_origin.z + 1.);
@@ -24,6 +25,7 @@ styles:
 
                         //// linear transition
                         // texf = fract(u_map_position.z);
+                        
                         //// use smoothstep instead
                         float tx = (1. - smoothness) * .5;
                         texf = smoothstep(tx, 1.-tx, fract(u_map_position.z));
