@@ -3,7 +3,7 @@ styles:
         base: polygons
         shaders:
             uniforms:
-                u_texture: ../img/uv-coords.png
+                u_customtexture: ../img/uv-coords.png
                 u_scale: 4. # number of times to repeat texture in a tile
             blocks:
                 position: |
@@ -33,7 +33,7 @@ styles:
                         return mix(intex, outtex, texf);
                     }
                 color: |
-                    color.rgb = TileTexture(u_texture,u_scale).rgb;
+                    color.rgb = TileTexture(u_customtexture,u_scale).rgb;
 
     texturelines:
         base: lines
@@ -43,25 +43,25 @@ styles:
         mix: texture
         shaders:
             uniforms:
-                u_texture: ../img/grass4.png
+                u_customtexture: ../img/grass4.png
     water:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: ../img/water2.gif
+                u_customtexture: ../img/water2.gif
     dirt:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: ../img/stones1.png
+                u_customtexture: ../img/stones1.png
     stone:
         base: polygons
         mix: texture
         shaders:
             uniforms:
-                u_texture: ../img/stone.gif
+                u_customtexture: ../img/stone.gif
                 u_scale: 8.
 sources:
     mapzen:
