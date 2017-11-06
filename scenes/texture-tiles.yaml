@@ -50,7 +50,6 @@ styles:
         shaders:
             uniforms:
                 u_texture: ../img/water2.gif
-                # u_texture: ../img/uv-coords.png
     dirt:
         base: polygons
         mix: texture
