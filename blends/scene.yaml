@@ -3,7 +3,7 @@
 sources:
     mapzen:
         type: TopoJSON
-        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=mapzen-PvCT6iP
+        url: ../tiles/{z}/{x}/{y}.topojson
 
 textures:
     test_sprites:

@@ -29,7 +29,7 @@ map = (function () {
     }
 
     // determine the scene url and content to load during start-up
-    var scene_url = 'problem-case/scene.yaml';
+    var scene_url = 'scenes/texture-tiles.yaml';
 
     // If there is a query, use it as the scene_url
     var query = parseQuery(window.location.search.slice(1));
@@ -40,8 +40,8 @@ map = (function () {
 
     var map = L.map('map', {
         "keyboardZoomOffset" : 1.,
-        "minZoom" : 2,
-        "maxZoom" : 21,
+        "minZoom" : 10,
+        "maxZoom" : 16,
         }
     );
 
