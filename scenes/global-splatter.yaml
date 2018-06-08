@@ -32,21 +32,21 @@ styles:
                     color.rgb = mix(color.rgb, vec3(1.000), step(.5, snoise( vec3(st*2.,t+64.0) ) ));
 
 sources:
-    mapzen:
-        type: TopoJSON
-        url: https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
+    nextzen:
+        type: MVT
+        url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.mvt
         url_params:
-            api_key: mapzen-tDHBHDp
+            api_key: 3XqXMjEdT2StnrIRJ4HYbg
         max_zoom: 16
 
 layers:
     earth:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             splatter:
                 order: 0
     water:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 3
