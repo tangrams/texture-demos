@@ -1,9 +1,9 @@
 # custom point texture blend mode demo
 
 sources:
-    mapzen:
-        type: TopoJSON
-        url: ../tiles/{z}/{x}/{y}.topojson
+    nextzen:
+        type: MVT
+        url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.mvt?api_key=3XqXMjEdT2StnrIRJ4HYbg
 
 textures:
     test_sprites:
@@ -46,25 +46,25 @@ styles:
 
 layers:
     water:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 2
                 color: '#353535'
     earth:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 1
                 color: '#555555'
     landuse:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             polygons:
                 order: 3
                 color: '#666666'
     places:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             points:
                 style: blend_points

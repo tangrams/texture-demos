@@ -64,29 +64,31 @@ styles:
                 u_customtexture: ../img/stone.gif
                 u_scale: 8.
 sources:
-    mapzen:
-        type: TopoJSON
-        url: ../tiles/{z}/{x}/{y}.topojson
-        max_zoom: 13
+    nextzen:
+        type: MVT
+        url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.mvt
+        url_params:
+            api_key: 3XqXMjEdT2StnrIRJ4HYbg
+        max_zoom: 16
 
 layers:
     earth:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             dirt:
                 order: 0
     landuse:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             grass:
                 order: 1
     water:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             water:
                 order: 3
     buildings:
-        data: { source: mapzen }
+        data: { source: nextzen }
         draw:
             stone:
                 order: 5

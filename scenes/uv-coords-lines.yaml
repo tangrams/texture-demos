@@ -1,10 +1,13 @@
 # visualization of uv texture coordinates on line segments
 
 sources:
-    mapzen:
-        type: TopoJSON
-        url: ../tiles/{z}/{x}/{y}.topojson
-        max_zoom: 13
+    nextzen:
+        type: MVT
+        url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.mvt
+        url_params:
+            api_key: 3XqXMjEdT2StnrIRJ4HYbg
+        max_zoom: 16
+
 textures:
     line-texture:
         url: ../img/uv-coords.png
@@ -26,7 +29,7 @@ styles:
 
 layers:
     water:
-        data: { source: mapzen}
+        data: { source: nextzen }
         draw:
             textured-lines:
                 order: 1
