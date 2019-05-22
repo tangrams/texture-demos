@@ -3,7 +3,7 @@ sources:
         type: MVT
         url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.mvt
         url_params:
-            api_key: 3XqXMjEdT2StnrIRJ4HYbg
+            api_key: d161Q8KATMOhSOcVGNyQ8g
         max_zoom: 16
 
 styles:

@@ -3,7 +3,7 @@
 sources:
     nextzen:
         type: MVT
-        url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.mvt?api_key=3XqXMjEdT2StnrIRJ4HYbg
+        url: https://tile.nextzen.org/tilezen/vector/v1/256/all/{z}/{x}/{y}.mvt?api_key=d161Q8KATMOhSOcVGNyQ8g
 
 textures:
     test_sprites:
